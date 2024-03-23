@@ -1,0 +1,33 @@
+version: "3.3"
+
+services:
+
+  cache:
+    image: redis:7.0.8-alpine
+    container_name: $REDIS_HOST
+    restart: always
+    ports:
+      - $REDIS_PORT:6379
+    networks:
+      - backend
+    environment:
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      REDIS_PORT: $REDIS_PORT
+
+  database:
+    image: postgres:alpine
+    container_name: "database"
+    ports:
+      - $DB_PORT:5432
+    networks:
+      - backend
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_DATABASE
+    volumes:
+      - ./.volumes/postgres:/var/lib/postgresql/data
+
+networks:
+  backend:
+    driver: bridge
